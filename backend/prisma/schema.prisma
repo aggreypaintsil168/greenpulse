@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model DrainReport {
+  id          String   @id @default(cuid())
+  lat         Float
+  lng         Float
+  photoUrl    String
+  severity    String   @default("MEDIUM")
+  status      String   @default("PENDING")
+  description String?
+  reportedBy  String   @default("anonymous")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  collection  WasteCollection?
+
+  @@map("drain_reports")
+}
+
+model WasteCollection {
+  id            String      @id @default(cuid())
+  drainReportId String      @unique
+  drainReport   DrainReport @relation(fields: [drainReportId], references: [id])
+  collectorId   String
+  collector     Collector   @relation(fields: [collectorId], references: [id])
+  weightKg      Float
+  wasteType     String      @default("MIXED")
+  co2SavedKg    Float
+  revenueGHS    Float       @default(0)
+  listedOnMarket Boolean    @default(true)
+  soldToRecycler Boolean    @default(false)
+  createdAt     DateTime    @default(now())
+  recyclerOrder  RecyclerOrder?
+
+  @@map("waste_collections")
+}
+
+model Collector {
+  id                 String            @id @default(cuid())
+  name               String
+  phone              String            @unique
+  password           String
+  zone               String?
+  totalKgLifetime    Float             @default(0)
+  totalCO2Lifetime   Float             @default(0)
+  greenPoints        Int               @default(0)
+  isActive           Boolean           @default(true)
+  createdAt          DateTime          @default(now())
+  collections        WasteCollection[]
+
+  @@map("collectors")
+}
+
+model Recycler {
+  id           String          @id @default(cuid())
+  companyName  String
+  phone        String          @unique
+  password     String
+  recyclerType String          @default("GENERAL")
+  address      String?
+  zone         String?
+  isVerified   Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  orders       RecyclerOrder[]
+  dispatches   TricycleDispatch[]
+
+  @@map("recyclers")
+}
+
+model RecyclerOrder {
+  id              String          @id @default(cuid())
+  recyclerId      String
+  recycler        Recycler        @relation(fields: [recyclerId], references: [id])
+  collectionId    String          @unique
+  collection      WasteCollection @relation(fields: [collectionId], references: [id])
+  requestedKg     Float
+  pricePerKgGHS   Float
+  status          String          @default("CONFIRMED")
+  notes           String?
+  createdAt       DateTime        @default(now())
+  dispatch        TricycleDispatch?
+
+  @@map("recycler_orders")
+}
+
+model Tricycle {
+  id          String             @id @default(cuid())
+  driverName  String
+  phone       String             @unique
+  zone        String?
+  capacityKg  Float              @default(200)
+  lat         Float              @default(5.6037)
+  lng         Float              @default(-0.1870)
+  isAvailable Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  dispatches  TricycleDispatch[]
+
+  @@map("tricycles")
+}
+
+model TricycleDispatch {
+  id          String    @id @default(cuid())
+  recyclerId  String
+  recycler    Recycler  @relation(fields: [recyclerId], references: [id])
+  tricycleId  String
+  tricycle    Tricycle  @relation(fields: [tricycleId], references: [id])
+  orderId     String?   @unique
+  order       RecyclerOrder? @relation(fields: [orderId], references: [id])
+  targetLat   Float?
+  targetLng   Float?
+  status      String    @default("DISPATCHED")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("tricycle_dispatches")
+}
+
+model GreenPointsLedger {
+  id         String   @id @default(cuid())
+  citizenId  String
+  points     Int
+  reason     String
+  reportId   String?
+  createdAt  DateTime @default(now())
+
+  @@map("green_points_ledger")
+}
