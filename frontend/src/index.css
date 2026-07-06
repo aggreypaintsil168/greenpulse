@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FAFFFE;
+    color: #1A1A2E;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gp-emerald text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-gp-forest transition-all duration-200 active:scale-95 shadow-sm hover:shadow-md cursor-pointer;
+  }
+  .btn-secondary {
+    @apply bg-gp-foam text-gp-forest font-semibold px-6 py-3 rounded-xl
+           border border-gp-mint hover:bg-gp-mint transition-all duration-200 active:scale-95 cursor-pointer;
+  }
+  .btn-danger {
+    @apply bg-gp-crimson text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-red-700 transition-all duration-200 active:scale-95 cursor-pointer;
+  }
+  .btn-recycler {
+    @apply bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-blue-700 transition-all duration-200 active:scale-95 shadow-sm cursor-pointer;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+  }
+  .card-hover {
+    @apply card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer;
+  }
+  .input-field {
+    @apply w-full border border-gray-200 rounded-xl px-4 py-3
+           focus:outline-none focus:ring-2 focus:ring-gp-jade focus:border-transparent
+           text-sm bg-white placeholder-gray-400 transition-all duration-150;
+  }
+  .badge-high     { @apply bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full; }
+  .badge-medium   { @apply bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full; }
+  .badge-low      { @apply bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full; }
+  .badge-critical { @apply bg-red-200 text-red-900 text-xs font-semibold px-2.5 py-1 rounded-full; }
+}
+
+.leaflet-container { border-radius: 1rem; z-index: 0; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #74C69D; border-radius: 3px; }
